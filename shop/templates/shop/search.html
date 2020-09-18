@@ -1,0 +1,213 @@
+  {% extends 'shop/base.html' %}
+
+{% block title %} Index {% endblock %}
+{% block css %} 
+       <!--  .container {
+          max-width: 1205px;
+          margin-left: 0;
+        } -->
+
+          .col-md-3
+          {
+          display: inline-block;
+          margin-left:-4px;
+          }
+          .carousel-indicators .active {
+          background-color: blue;
+              
+            }
+          .col-md-3 img{
+          max-width:227px;
+          height:275px;
+          }
+
+          body .carousel-indicator li{
+          background-color: #4d9def;
+        }
+}
+          }
+
+          body .carousel-indicators{
+          bottom: -80px;
+
+          }
+
+          .carousel-control-prev,
+          .carousel-control-next{
+            top:auto;
+            bottom:auto;
+            }
+
+          body .carousel-control-prev-icon,
+          body .carousel-control-next-icon{
+          background-color: blue;
+          }
+           body .no-padding{
+           padding-left: 0;
+           padding-right: 0;
+           }
+           .box-element{
+  box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.thumbnail{
+  width: 100%;
+  height: 200px;
+  -webkit-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    -moz-box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+    box-shadow: -1px -3px 5px -2px rgba(214,214,214,1);
+}
+.btn{
+  border-radius: 0;
+}
+h1,h2,h3,h4,h5,h6{
+  color:hsl(0, 0%, 30%);
+}
+{% endblock %}
+          
+
+
+{% block body %} 
+{% load static %}
+<div class="container">
+<div class= "row align-center">
+  <h3>{{msz}} for search query "<strong>{{query}}</strong>".</h3>
+</div>
+</div>
+
+<main role="main">
+  <div class="row">
+    <div class="col-md-9 col-sm-9 blog-main">
+   <!--Slideshow starts here -->
+   {% for products, range, nSlides in allProds %}
+   <form  class="my-3" method='get' action = '/shop/search/'>
+      <input type="hidden" name = 'search' value="{{products.0.category}}">
+      <button class="btn btn-outline-info" type="submit"><h4> Fresh arrivals: <strong>{{products.0.category}}</strong></h4></button>
+    </form>
+<div id="demo" class="carousel slide my-3 mx-2" data-ride="carousel">
+    <div class="container carousel-inner no-padding">
+
+      <div class="carousel-item active">
+
+    {% for i in products %}
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="margin-top: 0px;">
+          <div class="align-center" style="width: 18rem;">
+          <div class="product">
+             <a href="/shop/products/{{i.id}}"><button id= "qv{{i.id}}" class="btn btn-outline-warning mx-2 my-2 my-sm-0 cart" ><span id ="imagepr{{i.id}}"><img class= "row-image thumbnail" src='/media/{{i.image}}'></span></button></a>
+            <div class="card-body">
+              <h5 id ="namepr{{i.id}}">{{i.product_name}}</h5>
+              <p>{{i.desc|slice:"0:55"}} ...</p>
+              <hr>
+              <h6>Price : <span id ="pricepr{{i.id}}">{{i.price|floatformat:2}}/- &emsp;&ensp; GST @<span id ="gstpr{{i.id}}">{{i.gst}}</span></span></h6>
+              <span id="divpr{{i.id}}" class ='divpr'>&emsp;&emsp;
+                  <button id= "pr{{i.id}}" class="btn btn-outline-warning mx-2 my-2 my-sm-0 cart" >Add to Cart</button>
+              </span>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+    </div><div class="carousel-item">
+      {% endif %}
+
+      {% endfor %}
+    </div>
+</div>
+</div>
+    {% endfor %}
+      </div>
+          <aside class="col-md-3 col-sm-3 blog-sidebar">
+                <div class="p-4 mb-1 bg-light rounded">
+                <div class="alert alert-top-message alert-dismissible" role='alert'>
+                <button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class = "sr-only">Close</span></button>
+                <div class='container'>
+                <p class="mb-0"><em>Real time chatting application, Will be live soon. Stay tuned</em></p>
+                </div>
+                </div>
+                </div>
+
+                  {% if marketing_message %}
+                  <div class="p-4 mb-1 bg-light rounded">
+                  <div class="alert alert-top-message alert-dismissible" role='alert'>
+                  <button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class = "sr-only">Close</span></button>
+                  <div class='container'>
+                  <p class="mb-0"><em>{{marketing_message|safe}}</em></p>
+                  </div>
+                  </div>
+                  </div>
+                  {% endif %}
+                  
+            </aside><!-- /.blog-sidebar -->
+  </div><!-- /.row -->
+
+</main><!-- /.container -->
+
+      {% endblock %}
+
+    {% block js %}
+    <script>
+
+
+// Find out the cart items from localStorage
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    updateCart(cart);
+  }
+
+    function clearCart(cart){
+      cart = JSON.parse(localStorage.getItem('cart'));
+      localStorage.clear();
+      cart = {};
+      updateCart(cart);
+      location.reload()
+     }
+
+// If the add to cart button is clicked, add/increment the item
+ $('.divpr').on('click','button.cart',function(){
+    var idstr = this.id.toString();
+    if (cart[idstr] != undefined) {
+      qty = cart[idstr][0] + 1;
+    } else {
+      qty = 1;
+      image = document.getElementById('image'+idstr).innerHTML;
+      name =document.getElementById('name'+idstr).innerHTML;
+      price =document.getElementById('price'+idstr).innerHTML;
+      gst =document.getElementById('gst'+idstr).innerHTML;
+      cart[idstr] = [qty, name, parseInt(price), parseInt(gst), image];
+    }
+    updateCart(cart);    
+});
+// Add Popover to cart
+$('#popcart').popover();
+function updatePopover(cart)
+{
+  var popStr = "";
+  popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+  var i = 1;
+  for(var item in cart){
+    popStr = popStr + "<b>" + i + ".</b> ";
+    popStr = popStr + cart[item][1].slice(0,20) + ".....Qty : "+ cart[item][0]+ "<br>";
+    i = i+1;
+    }
+    popStr = popStr + "</div> <a href='/shop/cart' ><button class='btn btn-outline-warning mx-2 my-2 my-sm-0 id ='checkout'> GO to Cart</button></a> <button class='btn btn-outline-warning mx-2 my-2 my-sm-0' onClick='clearCart()' id ='clearCart'> Clear Cart</button>"
+    document.getElementById("popcart").setAttribute('data-content', popStr);
+    
+}
+
+function updateCart(cart) {
+    var sum = 0;
+    for (var item in cart) {
+      sum = sum + cart[item][0];
+    document.getElementById('cart').innerHTML = sum;
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updatePopover(cart); 
+}};
+</script>
+    {% endblock %}
+

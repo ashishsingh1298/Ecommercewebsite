@@ -1,0 +1,200 @@
+{% extends 'shop/base.html' %}
+
+{% block title %} Cart {{data}} {% endblock %}
+{% block css %} 
+ .box-element{
+  box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 10px;
+}
+ #featured{
+      max-width: 100px;
+      max-height: 75px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid black;
+
+    }
+.thumbnail{
+  width: 100%;
+  height: 75px;
+}
+.btn{
+  border-radius: 0;
+}
+h1,h2,h3,h4,h5,h6{
+  color:hsl(0, 0%, 30%);
+}
+.row-image{
+	width: 100px;
+}
+
+.cart-row{
+	display: flex;
+    align-items: flex-stretch;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+
+}
+
+.quantity{
+	display: inline-block;
+	font-weight: 700;
+	padding-right:10px;
+	
+
+}
+
+.chg-quantity{
+	width: 12px;
+	cursor: pointer;
+	display: block;
+	margin-top: 5px;
+	transition:.1s;
+}
+
+.chg-quantity:hover{
+	opacity: .6;
+}
+
+
+.hidden{
+	display: none!important;
+}
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+<div class="row">
+	<div class="col-lg-12">
+		<div class = "box-element">
+		<a class="btn btn-outline-dark" href='/shop/'>&#x2190; Continue Shoping</a>
+		<br>
+		<br>
+		<table class="table" id="totprice">
+			<tr>
+				
+					<a style="float: right; margin:5px;" class="btn btn-success" href='/shop/checkout'>Checkout</a>
+				</th>
+			</tr>
+		</table> 
+		</div>
+		<br>
+		<div class = "box-element">
+			<div class="cart-row">
+				<div style="flex:1"></div>
+				<div style="flex:2.5"><strong>Item</strong></div>
+				<div style="flex:1"><strong>Price</strong></div>
+				<div style="flex:1"><strong>Quantity</strong></div>
+				<div style="flex:1"><strong>Gst</strong></div>
+				<div style="flex:1"><strong>Total</strong></div>
+			</div>
+			<ul class="list-group" id="items">
+			<!-- // Dynamically taking values from js query -->
+			</ul>
+		</div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+ {% block js %}
+ <script>	
+ 	// Find out the cart items from localStorage
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    
+}
+
+var sum = 0;
+var totalPrice = 0;
+if($.isEmptyObject(cart)) {	
+	// If object is emppty
+		mystr = `Your cart is empty, Please select some items for your cart!!`
+	  $('#items').append(mystr);
+}
+else{
+
+		for(item in cart){
+			let qty = cart[item][0];
+			let name = cart[item][1];
+			let itemPrice = cart[item][2];
+			let gst = cart[item][3];
+			let image = cart[item][4];
+			let qtyPrice =itemPrice;
+			sum = sum + qty;
+			qtyPrice =qty*itemPrice;
+			gstPrice = qtyPrice + qtyPrice*gst/100;
+			totalPrice = totalPrice + gstPrice;
+					
+			if(sum==0){}
+			else{
+				mystr = `<div class="cart-row">
+				<div style="flex:1">${image}</div>
+				<div style="flex:2.5">${name}</div>
+				<div style="flex:1"> ${itemPrice}/-</div>
+				<div style="flex:1">
+					<p class="quantity">${qty} PC</p>
+					<div class="quantity">
+					<img data-product=${item} data-action = "add" class="chg-quantity update-cart" src='/static/shop/arrowup.png'>
+					<img data-product=${item} data-action = "remove" class="chg-quantity update-cart" src='/static/shop/arrowdown.png'>
+					</div>
+				</div>
+				<div style="flex:1">${gst}%</div>
+				<div style="flex:1">₹ ${gstPrice}/-</div>
+			</div>`
+		 $('#items').append(mystr);
+		  		}
+			}
+			totstr = `<th><h5>Items: <strong>${sum}</stron></h5></th>
+				<th><h5>Total: <strong>INR. ${parseFloat(totalPrice).toFixed(2)}/-</stron></h5>`
+		
+		  	 $('#totprice').append(totstr);
+		}
+	document.getElementById('cart').innerHTML = sum;
+
+// for updating items in the cart
+var updateBtns = document.getElementsByClassName("update-cart")
+
+for(var i =0; i < updateBtns.length; i++){
+	updateBtns[i].addEventListener('click', function(){
+		var productId = this.dataset.product
+		var action = this.dataset.action
+		
+		updateUserOrder(productId, action)
+	})
+
+}
+
+function updateUserOrder(productId, action){
+	
+	if(action=="add"){
+		cart[productId][0] +=1
+	}
+	if(action=="remove"){
+		cart[productId][0] -=1
+		cart[productId][0] = Math.max(0, cart[productId][0]);
+
+	    if (cart[productId][0]==0){
+	        delete cart[productId]; 
+	      }
+	}
+	localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('cart').innerHTML = sum;
+    
+    location.reload()
+
+}
+function removeItem(item){
+  delete cart[item];
+  // location.reload()
+  console.log(item)
+ }
+
+ </script>	
+ {% endblock %}

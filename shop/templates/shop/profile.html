@@ -1,0 +1,286 @@
+{% extends 'shop/base.html' %}
+
+{% block title %} My IE Cart {{message}} Profile {% endblock %}
+{% block css %}
+ <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+
+      body{
+  background-color: hsl(0, 0%, 98%);
+}
+
+h1,h2,h3,h4,h5,h6{
+  color:hsl(0, 0%, 30%);
+}
+
+.box-element{
+  box-shadow:hsl(0, 0%, 80%) 0 0 16px;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 10px;
+}
+#featured{
+      max-width: 100px;
+      max-height: 75px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid black;
+
+    }
+
+
+.product{
+  border-radius: 0 0 4px 4px;
+}
+
+.bg-dark{
+  background-color: #4f868c!important;
+}
+
+
+#cart-total{
+  display: block;
+  text-align: center;
+  color:#fff;
+  background-color: red;
+  width: 20px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+.col-lg-4, .col-lg-6, .col-lg-8, .col-lg-12{
+  margin-top: 10px;
+}
+
+.btn{
+  border-radius: 0;
+}
+
+.row-image{
+  width: 75px;
+}
+
+.form-field{
+  width:250px;
+  display: inline-block;
+  padding: 5px;
+}
+
+.cart-row{
+  display: flex;
+    align-items: flex-stretch;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+
+}
+
+.quantity{
+  display: inline-block;
+  font-weight: 700;
+  padding-right:10px;
+  
+
+}
+
+.chg-quantity{
+  width: 12px;
+  cursor: pointer;
+  display: block;
+  margin-top: 5px;
+  transition:.1s;
+}
+
+.chg-quantity:hover{
+  opacity: .6;
+}
+
+
+.hidden{
+  display: none!important;
+}
+    </style>
+{% endblock %}
+{% block body %}
+
+
+<div class="container">
+	<div class="col my-4">
+    {% if message %}
+
+	<h2>Welcome {{message}} </h2>
+<div class="container-fluid">
+{% endif %}
+  <div class="row">
+    <nav class="col-md-3 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+    {% if orders %}   
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Your Orders
+  </button>
+  <div class="dropdown-menu dropdown-menu-left">
+     <ul class="nav flex-column">
+     
+      
+     {% for order in orders %}
+     <form method = "Post" action="#" id="trackerorderid">
+      {% csrf_token %}
+     
+      <input type="hidden" name="orderId" value={{order.order_id}}>
+         <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text" id="divpr{{order.order_id}}" class ='divpr'>
+                <button id= "{{order.order_id}}" class="btn btn-outline-warning mx-2 my-2 my-sm-0 ord" >
+              {{order}}({{order.order_id}})
+              </button>
+            </span>
+            </a>
+          </li>
+  {% endfor %}
+
+  </form>
+    </ul>
+  </div>
+{% endif %}
+      </div>
+    </nav>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Order Summary</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+          </button>
+        </div>
+      </div>
+      <div class="box-element">
+        <hr>
+        <ul id="items1">
+      </ul>
+        <ul id="totalp">
+        </ul>
+        <hr>
+        <h4><strong>Order Status</strong></h4>
+        <ul id="items">
+      </ul>
+    </div>
+      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+      </div>
+    </main>
+  </div>
+</div>
+{% endblock %}
+<!-- For Script -->
+{% block js %}
+<script >
+var str
+$('.divpr').on('click','button.ord',function(){
+  var idstr = this.id.toString();
+  str = idstr.toString();
+});
+
+  var sum=0;
+  var totalPrice=0;
+$('#trackerorderid').click(function(event){
+  var formData = {
+    'orderId': str,
+    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+  };
+  $.ajax({
+    type:'POST',
+    url: '/shop/getorderid/',
+    data: formData,
+    encode: true
+  })
+
+  .done(function(data){
+    $('#items').empty();
+    $('#items1').empty();
+    $('#totalp').empty();
+// for showing the records to the user  
+   
+   data = JSON.parse(data);
+    if (data["status"]=="success"){
+      updates = data['updates'];
+      for(i=0; i<updates.length; i++){
+        let text = updates[i]['text'];
+        let time = updates[i]['time'];
+        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">${text}
+            <span class="badge badge-primary badge-pill">${time}</span>
+          </li>`
+          $('#items').append(mystr);
+          }
+
+          // Fill in the order  details
+      geodata1 = JSON.parse(data["itemsjson"]); 
+        for(item in geodata1){
+          let name = geodata1[item][1];
+          let qty = geodata1[item][0];
+          let itemPrice = geodata1[item][2];
+          let gst = geodata1[item][3];
+          let image = geodata1[item][4];
+          let qtyPrice = itemPrice;
+      sum = sum + qty;
+      qtyPrice =qty*itemPrice;
+      gstPrice = qtyPrice + qtyPrice*gst/100;
+      totalPrice = totalPrice + gstPrice;
+      
+          mystrwa = `<div class="cart-row">
+        <div style="flex:1.5">${image}</div>
+        <div style="flex:2.5">  ${name}</div>
+        <div style="flex:1">Rs. ${itemPrice}/-</div>
+        <div style="flex:0.75">
+          <p class="quantity">${qty} PC</p>
+        </div>
+        <div style="flex:0.75">${gst}%</div>
+        <div style="flex:1">Rs.${gstPrice}/-</div></div>`
+          $('#items1').append(mystrwa);
+            
+        
+
+       }
+              totstr = `<h5>Items: <strong>${sum}</strong> PCS</h5>
+        <h5>Total:   <strong>Rs ${parseFloat(totalPrice).toFixed(2)}/-</h5>`
+    
+         $('#totalp').append(totstr);
+
+
+      } else
+          {
+            mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+              You haven't compleated your payment, If compleated then go to payment-issue and raise your problem.
+              </li>`
+              $('#items').append(mystr);
+              $('#items1').append(mystr);
+          }
+      
+
+
+});
+totalPrice =0;
+sum = 0;
+event.preventDefault();
+ })
+</script>
+{% endblock%}

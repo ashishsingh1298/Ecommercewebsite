@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>{% block title %}IE-cart-> New arivals {% endblock %}</title>
+       <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    
+      <style>
+        main > 
+/*
+        .container {
+          max-width: 1205px;
+          padding: 60px 15px 0;
+        }*/
+
+        .footer {
+          background-color: #f5f5f5;
+        }
+
+        .footer > .container {
+          padding-right: 15px;
+          padding-left: 15px;
+        }
+
+        .bg-dark{
+        background-color: #4f868c!important;
+        }
+
+        h1,h2,h3,h4,h5,h6{
+          color:hsl(0, 0%, 30%);
+        } 
+        .btn{
+          border-radius: 0;
+        }
+
+        code {
+          font-size: 80%;
+        }
+
+        .footer {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          /* Set the fixed height of the footer here */
+          height: 60px;
+          line-height: 60px; /* Vertically center the text there */
+          background-color: #f5f5f5;
+        }
+
+ 
+      {% block css %} {% endblock %}
+  </style>
+  </head>
+  <body>
+{% if marketing_message %}
+<div class="alert alert-top-message alert-dismissible" role='alert'>
+<button type='button' class='close' data-dismiss='alert'><span aria-hidden='true'>&times;</span><span class = "sr-only">Close</span></button>
+<div class='custom'>
+  <h3 style="margin-bottom: -28px;margin-top: -8px;padding-left: 20px; color: red;"><marquee behavior="scroll" direction="left"><em>{{marketing_message|safe}}</em></marquee></h3>
+</div>
+</div>
+{% endif %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="position: sticky;top: 0;
+    z-index: 1071;">
+  <a class="navbar-brand" href="/"> IEcart</a>
+
+   <button type="button" class="btn btn-outline-warning mx-2 my-2 my-sm-0" data-toggle="modal" data-target="#collectionModal">
+            Collection
+          </button> 
+          
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div style="width: 600px;">
+    <form method='get' action = '/shop/search/' class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" style="width: 450px;" type="search" placeholder="Search" aria-label="Search"name = 'search' id = 'search' required>
+      <button class="btn btn-outline-warning mx-2 my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+  </div>
+  {% if user.is_authenticated %}
+    <ul class="nav nav mr-2">
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle " data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Welcome {{request.user}}</a>
+    <div class="dropdown-menu dropdown-menu-left">
+      <a class="dropdown-item" href="/shop/profile"><button type="button" class="btn  btn-outline-success mx-2 my-2 my-sm-0"> ProFile </button></a>
+      <a class="dropdown-item" href="/shop/logout"><button type="button" class="btn  btn-outline-dark mx-2 my-2 my-sm-0">  LogOut </button></a>
+         <!-- Button trigger to LogIn modal -->
+         <a class="dropdown-item" href="/shop/password_change/"><button type="button" class="btn  btn-outline-info mx-2 my-2 my-sm-0" data-toggle="modal">  ReSet  </button></a> 
+  <!-- end Button -->
+    </div>
+  </li>
+</ul>
+    {% else %}
+   <!-- Button trigger to LogIn modal -->
+<button type="button" class="btn  btn-outline-warning mx-2 my-2 my-sm-0" data-toggle="modal" data-target="#loginModal">
+  LogIn
+</button> 
+  <!-- end Button -->
+   
+ {% endif %}
+    <button type="button" class="btn btn-secondary mx-2 " id="popcart" data-container="body" data-toggle="popover" data-placement="bottom" data-html="true">
+       Cart<a href="/shop/cart">&nbsp;(<span id="cart">0</span>)</a>
+    </button>
+</nav>
+
+<!-- Displaying success / fail message -->
+
+{% for message in messages %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page" {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        Message:- {{ message }}
+    </li>
+  </ol>
+</nav>
+    {% endfor %}
+<!--LogIn Modal -->
+<div class="modal fade my-3" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="padding-top: 60px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalModalLabel">Fill LogIn Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+              <div class="modal-body">
+                <form action="/shop/login/" method="POST">{% csrf_token %}
+                  <div class="form-group">
+            <label for="userIN">User Name</label>
+            <input type="text" class="form-control" id="userIN" name="userIN" placeholder="User ID" required> 
+            </div>
+          <div class="form-group">
+            <label for="passwordIN">Password</label>
+            <input type="password" class="form-control" id="passwordIN" name="passwordIN" placeholder="*******" required> 
+          </div>
+          <button type="submit" class="btn btn-outline-success mx-2 my-2 my-sm-0">LogIn</button>
+          <!-- Button trigger to Signup modal -->
+          <button type="button" class="btn btn-outline-warning mx-2 my-2 my-sm-0" data-toggle="modal" data-target="#signupModal">
+            SignUp
+          </button> 
+            <!-- end Button -->
+          <button type="button" class="btn mx-2"><a href="/shop/password_reset/">ForGet Password</a>
+          </button>
+        </form>
+        </div>
+    </div>
+  </div>
+</div>
+<!--Signup Modal -->
+<div class="modal fade my-3" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModal" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="padding-top: 10px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signupModalModalLabel">Fill SignUp Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+              <div class="modal-body">
+                <form action="/shop/signup/" method="POST">{% csrf_token %}
+                  <div class="form-group">
+                      <label for="fnameUP">First Name</label>
+                      <input type="text" class="form-control" id="fnameUP" name="fnameUP" placeholder="Frist Name" required>
+                  </div>
+               <div class="form-group">
+                      <label for="lnameUP">Last Name</label>
+                      <input type="text" class="form-control" id="lnameUP" name="lnameUP" placeholder="Last Name" required>
+                </div>
+            <div class="form-group">
+            <label for="userUP">Username</label>
+            <input type="text" class="form-control" id="userUP" name="userUP" placeholder="Sholud be Unique" required> 
+            </div>
+          <div class="form-group">
+            <label for="emailUP">Email address</label>
+            <input type="email" class="form-control" id="emailUP" name ="emailUP" aria-describedby="emailHelp" placeholder="Like ashish@gmail.com" required>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+          </div>
+          <div class="form-group">
+            <label for="passwordUP">Password</label>
+            <input type="password" class="form-control" id="passwordUP" name="passwordUP" placeholder="*******" required> 
+          </div>
+          <div class="form-group">
+            <label for="rpasswordUP">Re-Enter Password</label>
+            <input type="password" class="form-control" id="rpasswordUP" name="rpasswordUP" placeholder="*******" required> 
+          </div>
+          <button type="submit" class="btn btn-outline-success mx-2 my-2 my-sm-0">Sign Up</button>
+        </form>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- end signup -->
+
+<!-- Showing all collection -->
+<div class="modal fade my-3" id="collectionModal" tabindex="-1" role="dialog" aria-labelledby="collectionModal" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="padding-top: 60px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="collectionModalModalLabel">Short Links</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+              <div class="modal-body">
+                <div>
+                <a href="/shop/" style="padding-left:2em">DEAL OF THE DAY!!!</a>
+                <a href="/shop/allproducts" style="padding-left:7em">ALL COLLECTIONS</a>
+                </div><br/></br>
+                {% for products, range, nSlides in allProds %}
+                <div class="btn-group mx-2">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{products.0.category}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-left">
+                {% for i in products %}
+                <form method='get' action = '/shop/search/'>
+                <input type="hidden" name='search' value="{{i.subcategory}}">
+                <button class="dropdown-item" type="submit"><strong>{{i.subcategory}}</strong></button>
+                </form>
+                {% endfor %}
+                </div>
+
+                </div>
+                {% endfor %} 
+
+        </div>
+    </div>
+  </div>
+</div>
+<!-- end of collection -->
+
+      {% block body %} {% endblock %}
+      
+       <!-- Footer -->
+       
+<footer class="page-footer font-small blue pt-4" style="padding-top: 10rem!important">
+<hr>
+  <!-- Footer Links -->
+  <div class="container-fluid text-center text-md-left">
+
+    <!-- Grid row -->
+    <div class="row" style="padding-left: 10%;">
+
+      <!-- Grid column -->
+      <div class="col-md-3 mt-md-0 mt-3 footer-nav-column footer-nav-column--large">
+        <!-- Content -->
+        <h5 class="text-uppercase">Social Media</h5>
+        <ul class="list-unstyled">
+          <li>
+            <a href="http://facebook.com">Facebook</a>
+          </li>
+          <li>
+            <a href="http://twitter.com">Twitter</a>
+          </li>
+          <li>
+            <a href="http://youtube.com">Youtube</a>
+          </li>
+          <li>
+            <a href="https://www.indiamart.com/indraprasthaenterprisesdelhi/">IndiaMart</a>
+          </li>
+        </ul>
+      </div>
+      <!-- Grid column -->
+
+      <hr class="clearfix w-100 d-md-none pb-3">
+       <!-- Grid column -->
+      <div class="col-md-3 mb-md-0 mb-3">
+
+        <!-- Links -->
+        <h5 class="text-uppercase">HELP</h5>
+
+        <ul class="list-unstyled">
+          <li>
+            <a href="/shop/tracker/">Tracker</a>
+          </li>
+          <li>
+            <a href="/shop/return_policy">FAQ</a>
+          </li>
+          <li>
+            <a href="/shop/contact">Payment Issues</a>
+          </li>
+        </ul>
+
+      </div>
+      <!-- Grid column -->
+      <div class="col-md-3 mb-md-0 mb-3">
+
+        <!-- Links -->
+        <h5 class="text-uppercase">POLICY</h5>
+
+        <ul class="list-unstyled">
+          <li>
+            <a href="/shop/return_policy">Return Policy</a>
+          </li>
+          <li>
+            <a href="/shop/privacy_policy">Privacy & Security Policy</a>
+          </li>
+           <li>
+            <a href="/shop/shipping_policy">Shipping Policy</a>
+          </li>
+        </ul>
+
+      </div>
+      <!-- Grid column -->
+
+
+      <!-- Grid column -->
+      <div class="col-md-3 mb-md-0 mb-3">
+
+        <!-- Links -->
+        <h5 class="text-uppercase"> COMPANY </h5>
+
+        <ul class="list-unstyled">
+          <li>
+            <a href="/shop/about/">About Us</a>
+          </li>
+          <li>
+            <a href="/shop/contact/">Contact Us</a>
+          </li>
+          <li>
+            <a href="/">Careers- we're hiring!</a>
+          </li>
+          <li>
+            <a href="/shop/terms_of_service/">Terms of Service</a>
+          </li>
+        </ul>
+
+      </div>
+      <!-- Grid column -->
+
+    </div>
+    <!-- Grid row -->
+
+  </div>
+  <!-- Footer Links -->
+
+  <!-- Copyright -->
+   <div class="footer-copyright text-center py-3">2011-2020
+    <a href="https://www.indiamart.com/indraprasthaenterprisesdelhi/"> Indraprastha Enterprises </a>
+    <h4><span class="text-right mx-3">
+    <a href="http://127.0.0.1:8000/"> Sell on IEcart </a>
+  </span></h4>
+</div>
+  <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+            crossorigin="anonymous"></script>
+          
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+  
+
+cart = JSON.parse(localStorage.getItem('cart'));
+var sum = 0;
+for (var item in cart) {
+  sum = sum + cart[item][0];
+}
+document.getElementById('cart').innerHTML = sum;
+$('#popcart').popover();
+</script>
+
+    {% block js %} {% endblock %}
+
+   
+  </body>
+</html>
