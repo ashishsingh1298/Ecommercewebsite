@@ -49,7 +49,7 @@ DEFAULT_APPS = [
 LOCAL_APPS = [
     'shop.apps.ShopConfig',
     'marketing',
-    'cart','stock',
+    # 'cart','stock',
     ]
 
 
@@ -65,7 +65,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'marketing.middleware.DisplayMarketing',
-    # 'Ecommercewebsite.middlewares.login_register_middleware',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
