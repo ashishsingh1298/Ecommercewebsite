@@ -63,7 +63,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
     'marketing.middleware.DisplayMarketing',
 ]
 
@@ -96,10 +95,22 @@ WSGI_APPLICATION = 'Ecommercewebsite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lcscxtbp',
+        'USER':'lcscxtbp',
+        'HOST': 'lallah.db.elephantsql.com',
+        'PASSWORD':'fZeyhiguN3HuGhWw1rYs87DoUJtwM8rb',
+        'PORT':'5432'
+
     }
 }
 

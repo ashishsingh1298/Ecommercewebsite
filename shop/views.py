@@ -210,6 +210,7 @@ def checkout(request):
 		if not amount ==str("0"):
 			order = Orders(item_json=item_json, user=user, name=name, amount=amount, email=email, address=address, address2=address2, city=city, state=state, zip_code=zip_code, phone=phone, special=special)
 			order.save()
+
 			id = order.order_id 
 			param_dict = {
 			'MID':'WorldP64425807474247',
@@ -308,10 +309,10 @@ def handlerequest(request):
 		verify = Checksum.verify_checksum(response_dict, MERCHANT_KEY, checksum)
 		if verify:
 			if response_dict['RESPCODE']=='01':
-				print('order successfull')
+				# print('order successfull')
 				status = Orders(status="Finished")
 			else:
-				print("order was not successfull because" + response_dict['RESPMSG'])
+				# print("order was not successfull because" + response_dict['RESPMSG'])
 				status = Orders(status="Aborted")
 	else:	
 		return HttpResponse('404- NOT FOUND')
