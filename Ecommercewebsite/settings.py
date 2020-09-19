@@ -63,7 +63,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
     'marketing.middleware.DisplayMarketing',
 ]
 
@@ -102,6 +101,18 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'lcscxtbp',
+#         'USER':'lcscxtbp',
+#         'HOST': 'lallah.db.elephantsql.com',
+#         'PASSWORD':'fZeyhiguN3HuGhWw1rYs87DoUJtwM8rb',
+#         'PORT':'5432'
+
+#     }
+# }
 
 
 # Password validation
