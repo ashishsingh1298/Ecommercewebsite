@@ -1,1 +1,1 @@
-# Ecommercewebsite is Ecommerce plateform for shoping .
+# Ecommercewebsite is shopping site.
