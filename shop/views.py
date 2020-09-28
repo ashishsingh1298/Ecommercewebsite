@@ -251,21 +251,20 @@ def handleSignup(request):
 		if User.objects.filter(username=userUP):
 			messages.error(request, 'Username must be Unique, Choose another username. ')
 			return redirect('/shop/')
-		# sending mail 
-			# sending mail 
-			send_mail(
-			'Your have successfully setup account on Indra cart',
-			'Thanks for signing up with Indra cart! Have fun, and dont hesitate to contact us with your feedback.',
-			settings.EMAIL_HOST_USER,
-			[f"{emailUP}"],
-			fail_silently=True,
-			)
+			
 		# created Phone number as user "Hear i have use phone as a user name for aunth. you can use unique user name"
 		myuser = User.objects.create_user(userUP, emailUP, passwordUP)
 		myuser.first_name = fnameUP
 		myuser.last_name = lnameUP
 		myuser.save()
 		messages.success(request,"Your have successfully created IE Cart account, Now login in to continue.")
+		send_mail(
+					f'Confirmation mail for Sign up on uptodate-Mart successfully done.',
+					'Thanks for signing up with Indra cart! Have fun, and dont hesitate to contact us with your feedback.',
+					settings.EMAIL_HOST_USER,
+					[f"{emailUP}"],
+					fail_silently=True,
+					)
 		return redirect('/shop/')
 	else:
 		return HttpResponse("404- Not Found")
