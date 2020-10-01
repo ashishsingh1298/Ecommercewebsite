@@ -8,6 +8,7 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
+      padding-left: 77px;
     }
 
     .column{
@@ -17,8 +18,8 @@
     }
 
     #featured{
-      max-width: 530px;
-      max-height: 400px;
+      max-width: 450px;
+      max-height:350px;
       object-fit: cover;
       cursor: pointer;
       border: 2px solid black;
@@ -62,12 +63,10 @@
     }
 
     #slider{
-      width: 440px;
+      width: 400px;
       display: flex;
       flex-wrap: nowrap;
       overflow-x: auto;
-
-
     }
 
     #slider::-webkit-scrollbar {
@@ -90,12 +89,9 @@
     #slider::-webkit-scrollbar-thumb:hover{
         background-color: #18b5ce;
     }
-
-    
-
     .arrow{
-      width: 30px;
-      height: 30px;
+      width: 20px;
+      height: 20px;
       cursor: pointer;
       transition: .3s;
     }
@@ -111,6 +107,7 @@
 {% block body %}
 {% load extras %}
 <div id="content-wrapper">
+
     <div class="column">
       <span id ="imagepr{{product.id}}"><img id="featured" src="/media/{{product.image}}"></span>
       

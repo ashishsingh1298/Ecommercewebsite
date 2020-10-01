@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
+from PIL import Image, ImageDraw, ImageFont
+
 # Create your models here.
 class ProductQueryset(models.query.QuerySet):
 	
@@ -29,13 +31,26 @@ class Products(models.Model):
 	prodviews = models.IntegerField(default=0) 
 	pub_date = models.DateField(auto_now_add=True, auto_now=False)
 	updated = models.DateField(auto_now_add=False, auto_now=True)
-	image = models.ImageField(upload_to="shop/images",default="")
+	image = models.ImageField(upload_to="shop/images",default="shop/images/NIL.png")
 	active = models.BooleanField(default=True)
 
 	objects = ProductManager()
 
 	def __str__(self):
 		return self.product_name
+
+	def save(self, *args, **kwargs):
+		super().save(*args, **kwargs)
+		img = Image.open(self.image.path)
+
+		if img.height > 300 or img.weight > 250:
+			output_size = (220,180)
+			img.thumbnail(output_size)
+			d1 = ImageDraw.Draw(img)
+			fontsize = 12
+			font = ImageFont.truetype("arial.ttf", fontsize)
+			d1.text((50, 50), "Image by IE cart",font=font, fill =(222, 163, 69))
+			img.save(self.image.path)
 
 	@property
 	def imageURL(self):
@@ -49,13 +64,27 @@ class Products(models.Model):
 class ViewImage(models.Model):
 	product = models.ForeignKey(Products, on_delete=models.CASCADE)
 	name = models.CharField(max_length=200)
-	viewimage = models.ImageField(upload_to="shop/images",default="")
+	viewimage = models.ImageField(upload_to="shop/images",default="shop/images/NIL.png")
 	featured = models.BooleanField(default=False)
 	thumbnail = models.BooleanField(default=False)
 	updated = models.DateField(auto_now_add=False, auto_now=True)
 	active = models.BooleanField(default=True)
 	def __str__(self):
 		return self.name
+
+	def save(self, *args, **kwargs):
+		super().save(*args, **kwargs)
+		img = Image.open(self.viewimage.path)
+
+		if img.height > 1300 or img.weight > 1250:
+			output_size = (350,450)
+			img.thumbnail(output_size)
+			d1 = ImageDraw.Draw(img)
+			font = ImageFont.truetype("arial.ttf", 32)
+			d1.text((450, 350), "Image by IE cart",font=font, fill =(199, 72, 238))
+			img.save(self.viewimage.path)
+		
+			
 
 	@property
 	def imageURL(self):

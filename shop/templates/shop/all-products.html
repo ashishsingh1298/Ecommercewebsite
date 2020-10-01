@@ -85,12 +85,47 @@ h1,h2,h3,h4,h5,h6{
 		<img class="thumbnail" src="{{product.imageURL}}" alt="{{product.product_name}}" style="width:100%">
 		</a>
 		<div class="box-element product">
+			<span id="quick{{product.id}}" class ='quickpr'>&emsp;&emsp;
+				<!-- Button trigger modal -->
 			<h6 title="{{product.product_name}}">Rs. <strong>{{product.price}}/-</strong></h6>
+			<button type="button" class ="btn btn-outline-dark" data-toggle="modal" data-target="#exampleModalCenter">QuickView</button>
+			<!-- Modal -->
+		</span>
 		</div>
 	</div>
     {% endfor %}
     {% endif %}
 	
+</div>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Prodect Detail</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="column">
+      <h1 id="namepr{{product.id}}">{{product.product_name}}</h1>
+      <hr>
+      <h3>Rs. <span id ="pricepr{{product.id}}">{{product.price}}</span></h3>
+      <h6>GST applicable <span id ="gstpr{{product.id}}">{{product.gst}}</span>%</h6>
+      <p>{{product.desc}}</p>
+
+      <input value=1 type="number" id="number">
+      <span id="divpr{{product.id}}" class ='divpr'>
+      <button id= "pr{{product.id}}" class="btn btn-outline-dark mx-2 cart"> Add to cart </button>
+      <a href="/shop/cart"><button class="mx-5 btn btn-outline-success  mx-3 "> Buy Now </button></a>
+      </span>
+      </br><br/>
+  </div>
+
+      </div>
+    </div>
+  </div>
 </div>
 </div>
 <nav aria-label="Page navigations" style="padding-top: 10px; text-align:center;">
@@ -125,8 +160,6 @@ h1,h2,h3,h4,h5,h6{
 {% endblock %}
 {% block js %}
 <script type="text/javascript">
-console.log('working')
-
 // $('#filterproduct').click(function(event){
 // 	console.log('click')
 //   var formData = {
@@ -140,5 +173,6 @@ console.log('working')
 //     encode: true
 //   })
 // });
+
 </script>
 {% endblock %}
