@@ -10,3 +10,4 @@ pycparser==2.20
 pycryptodome==3.9.7
 PyJWT==1.7.1
 social-auth-core==3.3.3
+python-social-auth[django]
