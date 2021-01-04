@@ -9,13 +9,13 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-# ie pas Exam@2020
+# ie pas Resibond@1010
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+Email_psw = "vcgarzupgklygzye"
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'nj-y$a(97ov&=poh5&l^yr-k3td(0&rd%w81!iv!_f&3$f4bdn'
 
@@ -29,7 +29,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # set for Email
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = "ashish1298india@gmail.com"
-EMAIL_HOST_PASSWORD = "hanvkezycjpvnqby"
+EMAIL_HOST_PASSWORD = Email_psw
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
@@ -50,6 +50,7 @@ LOCAL_APPS = [
     'shop.apps.ShopConfig',
     'marketing',
     # 'cart','stock',
+    'rest_framework',
     ]
 
 
@@ -150,3 +151,14 @@ MEDIA_URL = '/media/'
 TIME_ZONE = 'Asia/Kolkata'
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PERMISSION_CLASS': [
+                'rest_framework.permission.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASS': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+        ),
+    'PAGE_SIZE': 5
+}

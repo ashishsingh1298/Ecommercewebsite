@@ -2,9 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
+from PIL import Image, ImageDraw
+
+
 # Create your models here.
 class ProductQueryset(models.query.QuerySet):
-	
+
 	def active(self):
 		return self.filter(active=True)
 
@@ -26,16 +29,27 @@ class Products(models.Model):
 	price = models.IntegerField(default=0)
 	# sale_price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
 	gst = models.IntegerField(default=0)
-	prodviews = models.IntegerField(default=0) 
+	prodviews = models.IntegerField(default=0)
 	pub_date = models.DateField(auto_now_add=True, auto_now=False)
 	updated = models.DateField(auto_now_add=False, auto_now=True)
-	image = models.ImageField(upload_to="shop/images",default="")
+	image = models.ImageField(upload_to="shop/images",default="shop/images/NIL.png")
 	active = models.BooleanField(default=True)
 
 	objects = ProductManager()
 
 	def __str__(self):
 		return self.product_name
+
+	def save(self, *args, **kwargs):
+		super().save(*args, **kwargs)
+		img = Image.open(self.image.path)
+
+		if img.height > 220 or img.weight > 180:
+			output_size = (220,180)
+			img.thumbnail(output_size)
+			d1 = ImageDraw.Draw(img)
+			d1.text((50, 50), "Image by IE cart", fill =(222, 163, 69))
+			img.save(self.image.path)
 
 	@property
 	def imageURL(self):
@@ -49,13 +63,24 @@ class Products(models.Model):
 class ViewImage(models.Model):
 	product = models.ForeignKey(Products, on_delete=models.CASCADE)
 	name = models.CharField(max_length=200)
-	viewimage = models.ImageField(upload_to="shop/images",default="")
+	viewimage = models.ImageField(upload_to="shop/images",default="shop/images/NIL.png")
 	featured = models.BooleanField(default=False)
 	thumbnail = models.BooleanField(default=False)
 	updated = models.DateField(auto_now_add=False, auto_now=True)
 	active = models.BooleanField(default=True)
 	def __str__(self):
 		return self.name
+
+	def save(self, *args, **kwargs):
+		super().save(*args, **kwargs)
+		img = Image.open(self.viewimage.path)
+
+		if img.height > 350 or img.weight > 450:
+			output_size = (350,450)
+			img.thumbnail(output_size)
+			d1 = ImageDraw.Draw(img)
+			d1.text((450, 350), "Image by IE cart",fill =(199, 72, 238))
+			img.save(self.viewimage.path)
 
 	@property
 	def imageURL(self):
@@ -93,7 +118,7 @@ VAR_CATEGORIES = (
 class Variation(models.Model):
 	product = models.ForeignKey(Products,on_delete=models.CASCADE)
 	var_category = models.CharField(max_length=120, choices=VAR_CATEGORIES, default='size')
-	title = models.CharField(max_length=120)	
+	title = models.CharField(max_length=120)
 	image = models.ForeignKey(ViewImage,on_delete=models.CASCADE, null=True, blank=True)
 	price = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
 	updated = models.DateField(auto_now_add=False, auto_now=True)
@@ -148,10 +173,10 @@ class OrderUpdate(models.Model):
 	order_id = models.IntegerField(default="")
 	update_desc = models.CharField(max_length=5000)
 	timestamp = models.DateField(auto_now_add=True)
-	
+
 	def __str__(self):
 		return self.update_desc[0:44]  +"..."
-	
+
 class ProdComment(models.Model):
 	sno = models.AutoField(primary_key=True)
 	comment = models.TextField(max_length=1000, blank=False)
