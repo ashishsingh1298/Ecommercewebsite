@@ -1,6 +1,13 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'Products', views.ProductViewSet)
+router.register(r'Orders', views.OrderViewSet)
+router.register(r'User', views.UserViewSet)
+
 
 urlpatterns = [
     path('',views.index,name='ShopHome'),
@@ -34,4 +41,5 @@ urlpatterns = [
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='shop/password_reset_done.html'), name='password_reset_done'),
     path('password_reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='shop/password_reset_confirm.html'), name='password_reset_confirm'),
     path('password_reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='shop/password_reset_complete.html'), name='password_reset_complete'),
+    path(r'api/', include(router.urls)),
 ]

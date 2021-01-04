@@ -25,6 +25,27 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from marketing.models import MarketingMessage
 from shop.filters import ProductFilter
 from .forms import ProductSearchForm
+# for rest framework
+from .myserializer import ProductSerializer, OrderSerializer, UserSerializer
+from rest_framework import viewsets
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+	queryset = Products.objects.all().order_by("pub_date")
+	serializer_class = ProductSerializer
+	def get_queryset(self):
+		si = self.request.GET.get('si')
+		if si ==None:
+			si = ""
+		return Products.objects.filter(product_name__icontains = si)
+
+class OrderViewSet(viewsets.ModelViewSet):
+	queryset = Orders.objects.all()
+	serializer_class = OrderSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
 
 
 
