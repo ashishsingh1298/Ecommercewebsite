@@ -6,4 +6,7 @@ Steps to host on pythonanywhere.com
 4. enter credientials 
 5. check for requirement files
 6. install all requirements .
-7. After this make sql database
+7. After this make sql database / Optional
+8. In web app make static and media diractory
+9. in setting.py template directory should be added with Ecommercewebsite.
+10. setting.py make debug False
