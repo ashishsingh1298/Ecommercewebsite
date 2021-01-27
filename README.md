@@ -1,5 +1,4 @@
 # Ecommercewebsite is shopping site.
-# https://www.youtube.com/watch?v=ASQHv1RtNBs Youtube reference
 Steps to host on pythonanywhere.com
 1. open bash and make virual environment.
 2. mkvirtualenv --python=/usr/bin/python3.8 test
