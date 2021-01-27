@@ -1,4 +1,7 @@
-# Ecommerce website is shopping site.
+# This is a demo website hosted on pythonanywhere.com.
+
+Link - https://mymart.pythonanywhere.com/
+
 Steps to host on pythonanywhere.com
 1. Open bash and make virual environment.
 2. mkvirtualenv --python=/usr/bin/python3.8 test
