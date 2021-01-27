@@ -9,15 +9,15 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-# ie pas Resibond@1010
+# ie pas bond@1010
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-Email_psw = "vcgarzupgklygzye"
+Email_psw = "vcgarzuamitpgklygzye"
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'nj-y$a(97ov&=poh5&l^yr-k3td(0&rd%w81!iv!_f&3$f4bdn'
+SECRET_KEY = 'nj-y$a(97ov&=poh5&l^yr-k3td1298(0&rd%w81!iv!_f&3$f4bdn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
